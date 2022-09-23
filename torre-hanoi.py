@@ -9,32 +9,37 @@ towers_number = 3
 towers = {
     't1': {
         'pos': -70,
-        'discs_number': 3
+        'discs_number': 3,
+        'discs': [1, 2, 3] 
     },
     't2': {
         'pos': 0,
-        'discs_number': 0
+        'discs_number': 0,
+        'discs': [] 
     },
     't3': {
         'pos': 70,
-        'discs_number': 0
+        'discs_number': 0,
+        'discs': [] 
     },
 }
 
 
 discs = {
     'disc1': {
-        'x': 17,
+        'number': 1,
+        'x': 7,
         'y': 10,
-        'min_limit_x': -87,
-        'max_limit_x': -53,
-        'min_limit_y': 0,
-        'max_limit_y': 10,
+        'min_limit_x': -77,
+        'max_limit_x': -63,
+        'min_limit_y': 20,
+        'max_limit_y': 30,
         'pos_x': -70,
-        'pos_y': 0,
+        'pos_y': 20,
         'tower': 1
     },
     'disc2': {
+        'number': 2,
         'x': 12,
         'y': 10,
         'min_limit_x': -82,
@@ -46,14 +51,15 @@ discs = {
         'tower': 1
     },
     'disc3': {
-        'x': 7,
+        'number': 3,
+        'x': 17,
         'y': 10,
-        'min_limit_x': -77,
-        'max_limit_x': -63,
-        'min_limit_y': 20,
-        'max_limit_y': 30,
+        'min_limit_x': -87,
+        'max_limit_x': -53,
+        'min_limit_y': 0,
+        'max_limit_y': 10,
         'pos_x': -70,
-        'pos_y': 20,
+        'pos_y': 0,
         'tower': 1
     },
 }
@@ -150,17 +156,26 @@ def on_mouse_click(button, state, x, y):
             if y >= disc['min_limit_y'] and y <= disc['max_limit_y']:
                 actual_tower_number = disc['tower']
                 actual_tower_key = f't{actual_tower_number}'
-                towers[actual_tower_key]['discs_number'] -= 1
+                actual_tower = towers[actual_tower_key]
+                
                 next_tower_number = actual_tower_number + 1
                 if next_tower_number > towers_number:
                     next_tower_number = 1
-                disc['tower'] = next_tower_number
+                next_tower_key = f't{next_tower_number}'
+                next_tower = towers[next_tower_key]
 
-                tower_key = f't{next_tower_number}'
-                tower = towers[tower_key]
-                tower_discs_number = tower['discs_number']
-                disc_pos_x = tower['pos']
-                disc_pos_y = tower_discs_number * 10
+                next_tower_discs_number = len(next_tower['discs'])
+                if actual_tower['discs'][0] != disc['number']:
+                    return
+                if next_tower_discs_number != 0 and next_tower['discs'][0] < disc['number']:
+                    return
+
+                disc['tower'] = next_tower_number
+                actual_tower['discs'].pop(0)
+                next_tower['discs'].insert(0, disc['number'])
+
+                disc_pos_x = next_tower['pos']
+                disc_pos_y = next_tower_discs_number * 10
                 disc['pos_x'] = disc_pos_x
                 disc['pos_y'] = disc_pos_y
                 disc['min_limit_x'] = disc_pos_x - disc['x']
@@ -168,7 +183,6 @@ def on_mouse_click(button, state, x, y):
                 disc['min_limit_y'] = disc_pos_y
                 disc['max_limit_y'] = disc_pos_y + 10
 
-                tower['discs_number'] = tower_discs_number + 1
                 glutPostRedisplay()
 
 
