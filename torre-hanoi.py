@@ -4,7 +4,8 @@ from OpenGL.GLUT import *
 import OpenGL.GLUT as glut
 
 win = False
-win_message = 'Você venceu!'
+win_message_str = 'Você venceu!'
+win_message_rotation = 0.0
 window_width = 640
 window_height = 480
 towers_number = 3
@@ -184,11 +185,15 @@ def help_text():
         glut.glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, ord(text[i]))
 
 
-def won_message():
+def win_message():
+    global win_message_rotation
     glColor3f(0, 0.8, 0)
-    glRasterPos2f(-20, 90)
-    for i in range(len(win_message)):
-        glut.glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, ord(win_message[i]))
+    glPushMatrix()
+    glRotatef (win_message_rotation, 0.0, 0.0, 1.0)
+    glRasterPos2f(-20, -20)
+    for i in range(len(win_message_str)):
+        glut.glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, ord(win_message_str[i]))
+    glPopMatrix()
 
 
 def draw():
@@ -198,7 +203,7 @@ def draw():
     draw_all_discs()
 
     if win:
-        won_message()
+        win_message()
 
     help_text()
 
@@ -248,8 +253,14 @@ def set_tower_discs(disc, origin_tower, destiny_tower, next_tower_number):
     
 
 def on_mouse_click(button, state, x, y):
-    global win
-    if state == 1 or win:
+    global win, win_message_rotation
+
+    if state == 1:
+        return
+
+    if win:
+        win_message_rotation += 20.0
+        glutPostRedisplay()
         return
 
     x, y = srd_to_sru(x, y)
