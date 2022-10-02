@@ -3,6 +3,7 @@ from OpenGL.GLU import *
 from OpenGL.GLUT import *
 import OpenGL.GLUT as glut
 
+#variaveis globais necessarias para o funcionamento do programa
 win = False
 win_message_str = 'Você venceu!'
 win_message_rotation = 0.0
@@ -14,6 +15,8 @@ towers_height = 75
 towers = {}
 discs = {}
 
+
+#seta valores default para as variaveis globais envolvendo torres
 def set_towers_default_values():
     global towers, towers_number, towers_width, towers_height
     towers_number = 3
@@ -35,6 +38,7 @@ def set_towers_default_values():
     }
 
 
+#seta valores default para as variaveis globais envolvendo os discos
 def set_discs_default_values():
     global discs
     discs = {
@@ -77,6 +81,7 @@ def set_discs_default_values():
     }
 
 
+#cria uma torre
 def tower():
     glBegin(GL_LINES)
     glVertex2f(-towers_width, 0)
@@ -88,11 +93,13 @@ def tower():
     glEnd()
 
 
+#faz a função de escala da torre
 def tower_scale():
     if towers_number == 5:
         glScalef(0.5, 0.5, 1.0)
 
 
+#desenha todas as torres
 def draw_all_towers():
     glColor3f(0.0, 0.0, 0.0)
     glLineWidth(6)
@@ -129,6 +136,7 @@ def draw_all_towers():
         glPopMatrix()
 
 
+#desenha um disco
 def draw_disc(disc_number):
     glBegin(GL_POLYGON)
     glVertex2f(discs['disc'+str(disc_number)]['x']*-1, discs['disc'+str(disc_number)]['y'])
@@ -138,11 +146,13 @@ def draw_disc(disc_number):
     glEnd()
 
 
+#posiciona o disco
 def disc_positioning(x, y):
     glTranslatef(x, 0, 0)
     glTranslatef(0, y, 0)
 
 
+#desenha todos os discos
 def draw_all_discs():
     glColor3f(1.0, 0.0, 0.0)
     glPushMatrix()
@@ -177,6 +187,7 @@ def draw_all_discs():
         glPopMatrix()
 
 
+#desenha o texto de ajuda
 def help_text():
     text = "Aperte 't' para aumentar o número de torres e 'r' para reiniciar o jogo"
     glColor3f(0, 0, 0)
@@ -185,6 +196,7 @@ def help_text():
         glut.glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, ord(text[i]))
 
 
+#desenha o texto de vitória
 def win_message():
     global win_message_rotation
     glColor3f(0, 0.8, 0)
@@ -196,6 +208,7 @@ def win_message():
     glPopMatrix()
 
 
+#desenha a base do jogo
 def draw():
     glClear(GL_COLOR_BUFFER_BIT)
 
@@ -210,20 +223,24 @@ def draw():
     glutSwapBuffers()
 
 
+#realiza a conversão do SRD para o SRU
 def srd_to_sru(x, y):
     x = (2 * x) / (window_width / 100) - 100
     y = (2 * -y) / (window_height / 100) + 100
     return x, y
 
 
+#valida se o clique esta na area do disco
 def is_in_disc_area(disc, x, y):
     return x >= disc['min_limit_x'] and x <= disc['max_limit_x'] and y >= disc['min_limit_y'] and y <= disc['max_limit_y']
 
 
+#pega uma torre
 def get_tower(tower_number):
     return towers[f't{tower_number}']
 
 
+#valida se o movimento é valido
 def can_make_the_move(actual_tower, next_tower, disc):
     if actual_tower['discs'][0] != disc['number']:
         return False
@@ -232,6 +249,7 @@ def can_make_the_move(actual_tower, next_tower, disc):
     return True
 
 
+#seta os valores pra nova posicao do disco após o clique
 def set_disc_position(disc, tower):
     if towers_number == 5:
         disc_pos_x = tower['pos'] / 2
@@ -246,12 +264,14 @@ def set_disc_position(disc, tower):
     disc['max_limit_y'] = disc_pos_y + 8
 
 
+#seta os valores necessarios do disco após o clique
 def set_tower_discs(disc, origin_tower, destiny_tower, next_tower_number):
     disc['tower'] = next_tower_number
     origin_tower['discs'].pop(0)
     destiny_tower['discs'].insert(0, disc['number'])
     
 
+#função do mouse
 def on_mouse_click(button, state, x, y):
     global win, win_message_rotation
 
@@ -290,6 +310,7 @@ def on_mouse_click(button, state, x, y):
             glutPostRedisplay()
 
 
+#atualiza as variaveis globais para jogar com 5 torres
 def set_five_towers_global_values():
     global towers_number, towers_width, towers_height, win
     win = False
@@ -298,6 +319,7 @@ def set_five_towers_global_values():
     towers_height = 90
 
 
+#ajusta as posições das torres para 5 torres
 def adjust_towers_position(disc, tower_pos, x, min_limit_y, max_limit_y):
     discs_position = tower_pos / 2
 
@@ -310,6 +332,7 @@ def adjust_towers_position(disc, tower_pos, x, min_limit_y, max_limit_y):
     disc['pos_y'] = min_limit_y
 
 
+#adiciona os novos discos quando é alterado pra 5 torres
 def add_new_discs(tower_pos):
     discs_position = tower_pos / 2
 
@@ -339,6 +362,7 @@ def add_new_discs(tower_pos):
     }
 
 
+#adiciona as novas torres e discos
 def add_towers():
     set_towers_default_values()
     set_discs_default_values()
@@ -366,6 +390,7 @@ def add_towers():
     add_new_discs(towers['t1']['pos'])
 
 
+#reinicia o jogo
 def reset_game():
     global win
     win = False
@@ -373,6 +398,7 @@ def reset_game():
     set_discs_default_values()
     
 
+#função do teclado
 def keyboard_func(key, x, y):
     if key == b't':
         add_towers()
@@ -383,6 +409,7 @@ def keyboard_func(key, x, y):
     draw()
 
 
+#inicialização
 def init():
     glClearColor(0.8, 0.8, 0.8, 0.0)
     glMatrixMode(GL_MODELVIEW)
@@ -390,6 +417,7 @@ def init():
     gluOrtho2D(-100, 100, -100, 100)
 
 
+#funcao main
 def main():
     set_towers_default_values()
     set_discs_default_values()
@@ -404,4 +432,5 @@ def main():
     glutMainLoop()
 
 
+#chamada da função main
 main()
