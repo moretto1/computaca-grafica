@@ -1,28 +1,8 @@
-"""
- Um programa OpenGL simples que abre uma janela GLUT 
- e desenha dois objetos iluminados por 3 fontes de luz spot.
- Além dos objetos há um tabuleiro que não permite que a luz passe.
- Navegacao via botoes do mouse + movimento:
- - botao esquerdo: rotaciona objeto
- - botao direito:  aproxima/afasta
- - botao do meio:  translada objeto
-
- Teclas Home e End fazem zoom in/zoom out
- Teclas 0, 1 e 2 devem ser usadas para escolher a fonte de luz desejada (verde, vermelha ou azul)
- Setas movem fonte de luz em x e y
- PageUp/PageDown movem fonte de luz em z
-
- Marcelo Cohen e Isabel H. Manssour
- Este codigo acompanha o livro
- "OpenGL - Uma Abordagem Pratica e Objetiva"
-
-"""
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import OpenGL.GLUT as glut
 
-# Variaveis para controles de navegacao
 
 TAM = 55  # define TAM 40
 D = 2  # define D 2
@@ -67,15 +47,15 @@ def set_towers_default_values():
     towers = {
         't1': {
             'pos': -30,
-            'discs': [1, 2, 3] 
+            'discs': [1, 2, 3]
         },
         't2': {
             'pos': 0,
-            'discs': [] 
+            'discs': []
         },
         't3': {
             'pos': 30,
-            'discs': [] 
+            'discs': []
         },
     }
 
@@ -158,7 +138,7 @@ def desenhaChao():
 
 
 def tower():
-	glBegin(GL_QUADS) 
+	glBegin(GL_QUADS)
 
 	glVertex3f(-2.5, 40, -2.5)
 	glVertex3f(2.5, 40, -2.5)
@@ -288,11 +268,11 @@ def posicionaObservador():
 # Funcao usada para especificar o volume de visualizacao
 def especificaParametrosVisualizacao():
 	global fAspect, angle
-	glMatrixMode(GL_PROJECTION) # Especifica sistema de coordenadas de projecao
+	glMatrixMode(GL_PROJECTION)
 	glLoadIdentity()	# Inicializa sistema de coordenadas de projecao
 	gluPerspective(angle,fAspect,0.5,1500) # Especifica a projecao perspectiva(angulo,aspecto,zMin,zMax)
 	posicionaObservador()
-	
+
 
 def game(disc_number):
 	global win
@@ -324,7 +304,11 @@ def can_make_the_move(actual_tower, next_tower, disc):
         return False
     return True
 
-
+def reset_game():
+    global win
+    win = False
+    set_towers_default_values()
+    set_discs_default_values()
 
 # Funcao callback chamada para gerenciar eventos de teclas normais (ESC)
 def teclado(tecla, x, y):
@@ -343,6 +327,8 @@ def teclado(tecla, x, y):
 		game(2)
 	elif tecla == b'3':
 		game(3)
+	elif tecla == b'r':
+		reset_game()
 	else:
 		luz = 0
 	glutPostRedisplay()
@@ -391,7 +377,6 @@ def gerenciaMouse(button, state, x, y):
 		bot = -1
 
 
-# Funcao callback para eventos de movimento do mouse
 def gerenciaMovim(x, y):
 	global x_ini, y_ini, rotY, rotX, rotY_ini, rotX_ini, obsZ, obsY, obsX
 	global deltax, deltay, deltaz, SENS_OBS, SENS_ROT, SENS_TRANSL
@@ -429,18 +414,15 @@ def alteraTamanhoJanela(w, h):
 
 def inicializa():
 	global angle, rotX, rotY, obsX, obsY, obsZ
-	glClearColor(0.0, 0.0, 0.0, 1.0) 	# Define a cor de fundo da janela de visualizacao como branca
-	glEnable(GL_COLOR_MATERIAL) 	# Habilita a definicao da cor do material a partir da cor corrente
-	glEnable(GL_LIGHTING) 	#Habilita o uso de iluminacao
-	glEnable(GL_LIGHT0)     # Habilita as fontes de luz
+	glClearColor(0.0, 0.0, 0.0, 1.0)
+	glEnable(GL_COLOR_MATERIAL)
+	glEnable(GL_LIGHTING)
+	glEnable(GL_LIGHT0)
 	glEnable(GL_LIGHT1)
 	glEnable(GL_LIGHT2)
-	glEnable(GL_DEPTH_TEST) # Habilita o depth-buffering
-	glShadeModel(GL_SMOOTH) # Habilita o modelo de colorizacao de Gouraud
-	angle=70  # Inicializa a variavel que especifica o angulo da projecao perspectiva
-	# Inicializa as variaveis usadas para alterar a posicao do
-	# observador virtual
-	rotX = 30
+	glEnable(GL_DEPTH_TEST)
+	glShadeModel(GL_SMOOTH)
+	angle=70
 	rotY = 0
 	obsX = 0
 	obsY = 0
@@ -455,7 +437,7 @@ def main():
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH)
 	glutInitWindowPosition(5,5)
 	glutInitWindowSize(800,800)
-	glutCreateWindow("Desenho iluminado por spots")
+	glutCreateWindow("Tower of Hanoi - 3D")
 	glutDisplayFunc(desenha)
 	glutReshapeFunc(alteraTamanhoJanela)
 	glutKeyboardFunc (teclado)
