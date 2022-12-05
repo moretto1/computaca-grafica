@@ -242,6 +242,7 @@ def desenha():
 	if win:
 		win_message()
 
+	help_text()
 	desenhaChao()
 	glutSwapBuffers()
 
@@ -252,7 +253,7 @@ def win_message():
     glPushMatrix()
     glRasterPos2f(-10, 50)
     for i in range(len(win_message_str)):
-        glut.glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, ord(win_message_str[i]))
+        glut.glutBitmapCharacter(glut.GLUT_BITMAP_HELVETICA_18, ord(win_message_str[i]))
     glPopMatrix()
 
 
@@ -359,6 +360,13 @@ def teclasEspeciais (tecla, x, y):
 		pass
 	posicionaObservador()
 	glutPostRedisplay()
+
+def help_text():
+	text = "Aperte 'r' para reiniciar o jogo"
+	glColor3f(1, 1, 1)
+	glRasterPos2f(0, 50)
+	for i in range(len(text)):
+		glut.glutBitmapCharacter(glut.GLUT_BITMAP_HELVETICA_18, ord(text[i]))
 
 
 # Funcao callback para eventos de botoes do mouse
