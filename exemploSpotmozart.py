@@ -20,11 +20,10 @@
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
-import OpenGL.GLUT as glut
 
 # Variaveis para controles de navegacao
 
-TAM = 55  # define TAM 40
+TAM = 40  # define TAM 40
 D = 2  # define D 2
 angle = 0.0
 fAspect = 0.0
@@ -50,55 +49,6 @@ SENS_ROT = 5.0
 SENS_OBS = 10.0
 SENS_TRANSL = 10.0
 
-towers = {}
-discs = {}
-
-difference_disc_height = 3
-
-tower_first_disc_height = 2
-tower_next_disc_height = 3
-
-win = False
-win_message_str = 'Você venceu!'
-
-#seta valores default para as variaveis globais envolvendo torres
-def set_towers_default_values():
-    global towers
-    towers = {
-        't1': {
-            'pos': -30,
-            'discs': [1, 2, 3] 
-        },
-        't2': {
-            'pos': 0,
-            'discs': [] 
-        },
-        't3': {
-            'pos': 30,
-            'discs': [] 
-        },
-    }
-
-
-#seta valores default para as variaveis globais envolvendo os discos
-def set_discs_default_values():
-    global discs
-    discs = {
-        'disc1': {
-            'number': 1,
-            'tower': 1
-        },
-        'disc2': {
-            'number': 2,
-            'tower': 1
-        },
-        'disc3': {
-            'number': 3,
-            'tower': 1
-        },
-    }
-
-
 
 # Funcao responsavel pela especificacao dos parametros de iluminacao
 def defineIluminacao():
@@ -108,7 +58,7 @@ def defineIluminacao():
 	especMaterial = 90
 	glMaterialfv(GL_FRONT,GL_SPECULAR, especularidade) # Define a refletancia do material
 	glMateriali(GL_FRONT,GL_SHININESS,especMaterial) # Define a concentracao do brilho
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente) # Ativa o uso da lutowers['t' + strz ambiente
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente) # Ativa o uso da luz ambiente
 	cont = 0
 	while cont < 3: # Define os parametros das fontes de luz
 		glLightfv(GL_LIGHT0 + cont, GL_AMBIENT, luzAmbiente)
@@ -157,123 +107,29 @@ def desenhaChao():
 	glEnd()
 
 
-def tower():
-	glBegin(GL_QUADS) 
-
-	glVertex3f(-2.5, 40, -2.5)
-	glVertex3f(2.5, 40, -2.5)
-	glVertex3f(2.5, 0, -2.5)
-	glVertex3f(-2.5, 0, -2.5)
-
-	glVertex3f(-2.5, 40, 2.5)
-	glVertex3f(2.5, 40, 2.5)
-	glVertex3f(2.5, 0, 2.5)
-	glVertex3f(-2.5, 0, 2.5)
-
-	glVertex3f(-2.5, 40, -2.5)
-	glVertex3f(-2.5, 40, 2.5)
-	glVertex3f(-2.5, 0, 2.5)
-	glVertex3f(-2.5, 0, -2.5)
-
-	glVertex3f(2.5, 40, -2.5)
-	glVertex3f(2.5, 40, 2.5)
-	glVertex3f(2.5, 0, 2.5)
-	glVertex3f(2.5, 0, -2.5)
-
-	glVertex3f(-2.5, 40, -2.5)
-	glVertex3f(2.5, 40, -2.5)
-	glVertex3f(2.5, 40, 2.5)
-	glVertex3f(-2.5, 40, 2.5)
-
-	glEnd()
-
-
-def draw_all_towers():
-	glColor3f(0.6, 0.6, 0.1)
-
-	glPushMatrix()
-	glTranslatef(-30, 0, 0)
-	tower()
-	glPopMatrix()
-
-	tower()
-
-	glPushMatrix()
-	glTranslatef(30, 0, 0)
-	tower()
-	glPopMatrix()
-
-
-def draw_all_discs():
-	disc3_tower_height = tower_first_disc_height
-
-	disc2_tower_height = 2
-	if len(towers['t' + str(discs['disc2']['tower'])]['discs']) == 2:
-		if (1 in towers['t' + str(discs['disc2']['tower'])]['discs']):
-			disc2_tower_height = tower_first_disc_height
-		else:
-			disc2_tower_height = 5
-	elif len(towers['t' + str(discs['disc2']['tower'])]['discs']) == 3:
-		disc2_tower_height = 5
-	elif len(towers['t' + str(discs['disc2']['tower'])]['discs']) == 1:
-		disc2_tower_height = 2
-
-	disc1_tower_height = 2
-	if len(towers['t' + str(discs['disc1']['tower'])]['discs']) == 2:
-		disc1_tower_height = 5
-	if len(towers['t' + str(discs['disc1']['tower'])]['discs']) == 3:
-		disc1_tower_height = 8
-
-	glColor3f(1.0, 0.0, 0.0)
-	glPushMatrix()
-	glTranslatef(towers['t' + str(discs['disc1']['tower'])]['pos'], 0, 0)
-	glTranslatef(0, disc1_tower_height, 0)
-	glRotatef(-90,1,0,0)
-	glutSolidTorus(2, 6, 7, 7)
-	glPopMatrix()
-
-	glColor3f(0.0, 1.0, 0.0)
-	glPushMatrix()
-	glTranslatef(towers['t'+ str(discs['disc2']['tower'])]['pos'], 0, 0)
-	glTranslatef(0, disc2_tower_height, 0)
-	glRotatef(-90,1,0,0)
-	glutSolidTorus(2, 8, 12, 12)
-	glPopMatrix()
-
-	glColor3f(0.0, 0.0, 1.0)
-	glPushMatrix()
-	glTranslatef(towers['t' + str(discs['disc3']['tower'])]['pos'], 0, 0)
-	glTranslatef(0, disc3_tower_height, 0)
-	glRotatef(-90,1,0,0)
-
-	glutSolidTorus(2, 10, 16, 16)
-	glPopMatrix()
-
 
 def desenha():
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-	defineIluminacao()
-	glDisable(GL_LIGHTING)
-	glEnable(GL_LIGHTING)
-
-	draw_all_towers()
-	draw_all_discs()
-
-	if win:
-		win_message()
-
+	cont = 0
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)# Limpa a janela de visualizacao com a cor de fundo definida previamente
+	defineIluminacao()	# Chama a funcao que especifica os parametros de iluminacao
+	glDisable(GL_LIGHTING)	# Desabilita a iluminacao para desenhar as esferas
+	while cont < 3:   # Desenha "esferas" nas posicoes das fontes de luz
+		glPushMatrix()
+		glTranslatef(posLuz[cont][0],posLuz[cont][1],posLuz[cont][2])
+		glColor3f(luzDifusa[cont][0],luzDifusa[cont][1],luzDifusa[cont][2])
+		glutSolidSphere(1.5,20,10)
+		glPopMatrix()
+		cont = cont + 1
+	glEnable(GL_LIGHTING) # Habilita iluminacao novamente
+	glColor3f(1.0,1.0,1.0)	# Altera a cor do desenho para branco
+	glPushMatrix() # Desenha o teapot e o chao
+	glTranslatef(-20.0,7.5,0.0)
+	glutSolidTeapot(10)
+	glTranslatef(30.0,-7.5,0.0)
+	glutSolidTorus(5,10,10,10)
+	glPopMatrix()
 	desenhaChao()
-	glutSwapBuffers()
-
-
-def win_message():
-    global win_message_rotation
-    glColor3f(0, 0.8, 0)
-    glPushMatrix()
-    glRasterPos2f(-10, 50)
-    for i in range(len(win_message_str)):
-        glut.glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, ord(win_message_str[i]))
-    glPopMatrix()
+	glutSwapBuffers() # Executa os comandos OpenGL
 
 
 def posicionaObservador():
@@ -292,38 +148,6 @@ def especificaParametrosVisualizacao():
 	glLoadIdentity()	# Inicializa sistema de coordenadas de projecao
 	gluPerspective(angle,fAspect,0.5,1500) # Especifica a projecao perspectiva(angulo,aspecto,zMin,zMax)
 	posicionaObservador()
-	
-
-def game(disc_number):
-	global win
-
-	if win:
-		return
-
-	actual_tower = discs['disc'+str(disc_number)]['tower']
-	next_tower = actual_tower + 1
-	if next_tower > 3:
-		next_tower = 1
-
-	if not can_make_the_move(actual_tower, next_tower, disc_number):
-		return
-
-	towers['t' + str(actual_tower)]['discs'].pop(0)
-	towers['t' + str(next_tower)]['discs'].insert(0, disc_number)
-
-	discs['disc'+str(disc_number)]['tower'] = next_tower
-
-	if len(towers['t3']['discs']) == 3:
-		win = True
-
-
-def can_make_the_move(actual_tower, next_tower, disc):
-    if towers['t' + str(actual_tower)]['discs'][0] != discs['disc' + str(disc)]['number']:
-        return False
-    if len(towers['t' + str(next_tower)]['discs']) != 0 and towers['t' + str(next_tower)]['discs'][0] < discs['disc' + str(disc)]['number']:
-        return False
-    return True
-
 
 
 # Funcao callback chamada para gerenciar eventos de teclas normais (ESC)
@@ -331,18 +155,12 @@ def teclado(tecla, x, y):
 	global luz
 	if tecla == b'q': # ESC ?
 		exit()
-	if tecla == b'4':
+	if tecla == b'1':
 		luz = 0  #luz vermelha
-	elif tecla == b'5':
-		luz = 1 #luz verde
-	elif tecla == b'6':
-		luz = 2 #luz azul
-	elif tecla == b'1':
-		game(1)
 	elif tecla == b'2':
-		game(2)
+		luz = 1 #luz verde
 	elif tecla == b'3':
-		game(3)
+		luz = 2 #luz azul
 	else:
 		luz = 0
 	glutPostRedisplay()
@@ -369,8 +187,6 @@ def teclasEspeciais (tecla, x, y):
 	elif tecla == GLUT_KEY_END:
 		if angle <= 150:
 			angle +=5
-	elif tecla == b'1':
-		pass
 	posicionaObservador()
 	glutPostRedisplay()
 
@@ -448,10 +264,7 @@ def inicializa():
 
 
 def main():
-	set_towers_default_values()
-	set_discs_default_values()
-
-	glutInit()
+	glutInit ()
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DEPTH)
 	glutInitWindowPosition(5,5)
 	glutInitWindowSize(800,800)
