@@ -4,28 +4,31 @@ from OpenGL.GLU import *
 import OpenGL.GLUT as glut
 
 
-TAM = 55  # define TAM 40
-D = 2  # define D 2
-angle = 0.0
-fAspect = 0.0
-rotX = 0.0
-rotY = 0.0
-rotX_ini = 0.0
-rotY_ini = 0.0
-obsX = 0.0
-obsY = 0.0
-obsZ = 0.0
-obsX_ini = 0.0
-obsY_ini = 0.0
-obsZ_ini = 0.0
+TAM = 60
+D = 2 
+
+angle = 0
+fAspect = 0
+rotX = 0
+rotY = 0
+rotX_ini = 0
+rotY_ini = 0
+obsX = 0
+obsY = 0
+obsZ = 0
+obsX_ini = 0
+obsY_ini = 0
+obsZ_ini = 0
 x_ini = 0
 y_ini = 0
 bot = 0
+
 luz = 0 # Luz selecionada
-posLuz = [[-10.0, 30.0, 10.0, 1.0],[0.0, 30.0, 10.0, 1.0],[10.0, 30.0, 10.0, 1.0 ]] # Posicao de cada luz
-dirLuz = [[0.0,-1.0,0.0],[0.0,-1.0,0.0],[ 0.0,-1.0,0.0]]    # Direcao de cada luz
-luzDifusa = [[1.0,0.0,0.0,1.0 ],[ 0.0,1.0,0.0,1.0 ],[ 0.0,0.0,1.0,1.0 ]]  # Cor difusa de cada luz #RGB
-luzEspecular= [[1.0,0.0,0.0,1.0],[0.0,1.0,0.0,1.0],[0.0,0.0,1.0,1.0]]     # Cor especular de cada luz #RGB
+posLuz = [[-30, 50, 0, 1], [0, 50, 0, 1], [30, 50, 0, 1]] # Posicao de cada luz
+dirLuz = [[0, -1, 0], [0, -1, 0], [0, -1, 0]]    # Direcao de cada luz
+luzDifusa = [[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]  # Cor difusa de cada luz #RGB
+luzEspecular= [[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]     # Cor especular de cada luz #RGB
+
 SENS_ROT = 5.0
 SENS_OBS = 10.0
 SENS_TRANSL = 10.0
@@ -40,6 +43,7 @@ tower_next_disc_height = 3
 
 win = False
 win_message_str = 'Você venceu!'
+
 
 #seta valores default para as variaveis globais envolvendo torres
 def set_towers_default_values():
@@ -79,15 +83,14 @@ def set_discs_default_values():
     }
 
 
-
 # Funcao responsavel pela especificacao dos parametros de iluminacao
-def defineIluminacao():
+def sets_lighting():
 	global posLuz, dirLuz, luzDifusa, luzEspecular
-	luzAmbiente= [0.2,0.2,0.2,1.0]
-	especularidade = [0.5,0.5,0.5,1.0] # Capacidade de brilho do material
+	luzAmbiente= [0.1, 0.1, 0.1, 1.0]
+	especularidade = [0.7, 0.7, 0.7, 1.0] # Capacidade de brilho do material
 	especMaterial = 90
-	glMaterialfv(GL_FRONT,GL_SPECULAR, especularidade) # Define a refletancia do material
-	glMateriali(GL_FRONT,GL_SHININESS,especMaterial) # Define a concentracao do brilho
+	glMaterialfv(GL_FRONT, GL_SPECULAR, especularidade) # Define a refletancia do material
+	glMateriali(GL_FRONT, GL_SHININESS, especMaterial) # Define a concentracao do brilho
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente) # Ativa o uso da lutowers['t' + strz ambiente
 	cont = 0
 	while cont < 3: # Define os parametros das fontes de luz
@@ -98,13 +101,11 @@ def defineIluminacao():
 		glLightfv(GL_LIGHT0 + cont, GL_SPOT_DIRECTION,dirLuz[cont])
 		glLightf(GL_LIGHT0  + cont, GL_SPOT_CUTOFF,40.0)
 		glLightf(GL_LIGHT0  + cont, GL_SPOT_EXPONENT,10.0)
-		#print(GL_LIGHT0 + cont)
 		cont = cont + 1
 
 
-
 # Funcao para desenhar um "chao" no ambiente
-def desenhaChao():
+def floor():
 	global D, TAM
 	flagx = True  # Flags para determinar a cor de cada quadrado
 	flagz = True
@@ -230,9 +231,9 @@ def draw_all_discs():
 	glPopMatrix()
 
 
-def desenha():
+def draw():
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-	defineIluminacao()
+	sets_lighting()
 	glDisable(GL_LIGHTING)
 	glEnable(GL_LIGHTING)
 
@@ -243,7 +244,7 @@ def desenha():
 		win_message()
 
 	help_text()
-	desenhaChao()
+	floor()
 	glutSwapBuffers()
 
 
@@ -257,7 +258,7 @@ def win_message():
     glPopMatrix()
 
 
-def posicionaObservador():
+def observer():
 	global rotX, rotY, obsX, obsY, obsZ
 	glMatrixMode(GL_MODELVIEW) # Especifica sistema de coordenadas do modelo
 	glLoadIdentity() # Inicializa sistema de coordenadas do modelo
@@ -267,12 +268,12 @@ def posicionaObservador():
 
 
 # Funcao usada para especificar o volume de visualizacao
-def especificaParametrosVisualizacao():
+def visualization_params():
 	global fAspect, angle
 	glMatrixMode(GL_PROJECTION)
 	glLoadIdentity()	# Inicializa sistema de coordenadas de projecao
 	gluPerspective(angle,fAspect,0.5,1500) # Especifica a projecao perspectiva(angulo,aspecto,zMin,zMax)
-	posicionaObservador()
+	observer()
 
 
 def game(disc_number):
@@ -305,24 +306,16 @@ def can_make_the_move(actual_tower, next_tower, disc):
         return False
     return True
 
+
 def reset_game():
     global win
     win = False
     set_towers_default_values()
     set_discs_default_values()
+	
 
-# Funcao callback chamada para gerenciar eventos de teclas normais (ESC)
-def teclado(tecla, x, y):
-	global luz
-	if tecla == b'q': # ESC ?
-		exit()
-	if tecla == b'4':
-		luz = 0  #luz vermelha
-	elif tecla == b'5':
-		luz = 1 #luz verde
-	elif tecla == b'6':
-		luz = 2 #luz azul
-	elif tecla == b'1':
+def keyboard(tecla, x, y):
+	if tecla == b'1':
 		game(1)
 	elif tecla == b'2':
 		game(2)
@@ -330,8 +323,7 @@ def teclado(tecla, x, y):
 		game(3)
 	elif tecla == b'r':
 		reset_game()
-	else:
-		luz = 0
+
 	glutPostRedisplay()
 
 
@@ -358,8 +350,9 @@ def teclasEspeciais (tecla, x, y):
 			angle +=5
 	elif tecla == b'1':
 		pass
-	posicionaObservador()
+	observer()
 	glutPostRedisplay()
+
 
 def help_text():
 	text = "Aperte 'r' para reiniciar o jogo"
@@ -370,7 +363,7 @@ def help_text():
 
 
 # Funcao callback para eventos de botoes do mouse
-def gerenciaMouse(button, state, x, y):
+def mouse(button, state, x, y):
 	global x_ini, y_ini, obsX_ini, obsY_ini, obsZ_ini, rotX_ini, rotY_ini, bot
 	if state == GLUT_DOWN:
 		x_ini = x  # Salva os parametros atuais
@@ -385,7 +378,7 @@ def gerenciaMouse(button, state, x, y):
 		bot = -1
 
 
-def gerenciaMovim(x, y):
+def movement(x, y):
 	global x_ini, y_ini, rotY, rotX, rotY_ini, rotX_ini, obsZ, obsY, obsX
 	global deltax, deltay, deltaz, SENS_OBS, SENS_ROT, SENS_TRANSL
 	if bot == GLUT_LEFT_BUTTON:	# Botao esquerdo ?
@@ -405,22 +398,21 @@ def gerenciaMovim(x, y):
 		# E modifica posicoes
 		obsX = obsX_ini + deltax/SENS_TRANSL
 		obsY = obsY_ini - deltay/SENS_TRANSL
-	posicionaObservador()
+	observer()
 	glutPostRedisplay()
 
 
-
 # Funcao callback chamada quando o tamanho da janela eh alterado
-def alteraTamanhoJanela(w, h):
+def change_window_size(w, h):
 	global fAspect
 	if h == 0:
 		h = 1	# Para previnir uma divisao por zero
 	glViewport(0, 0, w, h)	# Especifica as dimensoes da viewport
 	fAspect = float(w/h)	# Calcula a correcao de aspecto
-	especificaParametrosVisualizacao()
+	visualization_params()
 
 
-def inicializa():
+def init():
 	global angle, rotX, rotY, obsX, obsY, obsZ
 	glClearColor(0.0, 0.0, 0.0, 1.0)
 	glEnable(GL_COLOR_MATERIAL)
@@ -446,13 +438,13 @@ def main():
 	glutInitWindowPosition(5,5)
 	glutInitWindowSize(800,800)
 	glutCreateWindow("Tower of Hanoi - 3D")
-	glutDisplayFunc(desenha)
-	glutReshapeFunc(alteraTamanhoJanela)
-	glutKeyboardFunc (teclado)
+	glutDisplayFunc(draw)
+	glutReshapeFunc(change_window_size)
+	glutKeyboardFunc(keyboard)
 	glutSpecialFunc (teclasEspeciais)
-	glutMouseFunc(gerenciaMouse)
-	glutMotionFunc(gerenciaMovim)
-	inicializa()
+	glutMouseFunc(mouse)
+	glutMotionFunc(movement)
+	init()
 	glutMainLoop()
 
 
