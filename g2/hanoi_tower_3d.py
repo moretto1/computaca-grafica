@@ -359,11 +359,11 @@ def keyboard(tecla, x, y):
     elif tecla == b'r':
         reset_game()
     elif tecla == b'q':
-        eyex = 0.0
-        eyey = 0.0
-        eyez = 100.0
-        angle = 45
-        angulo = 0.0
+        eyex = 0
+        eyey = 25
+        eyez = 100
+        angle = 70
+        parameters_3d()
     elif tecla == b'e':
         eyez = 0
         if angulo <= (2 * PI):
@@ -372,6 +372,7 @@ def keyboard(tecla, x, y):
             angulo = 0
         eyex = 100 * cos(angulo)
         eyey = 100 * sin(angulo)
+        parameters_3d()
     elif tecla == b'y':
         eyex = 0
         if angulo <= (2 * PI):
@@ -380,44 +381,17 @@ def keyboard(tecla, x, y):
             angulo = 0
         eyez = 100 * cos(angulo)
         eyey = 100 * sin(angulo)
+        parameters_3d()
     elif tecla == b'a':
-        eyey = 0
+        eyey = 25
         if angulo <= (2 * PI):
             angulo += PI / 6
         else:
-            angulo = 0.0
-        eyex = 200 * cos(angulo)
-        eyez = 200 * sin(angulo)
-    parameters_3d()
-    glutPostRedisplay()
+            angulo = 0
+        eyex = 100 * cos(angulo)
+        eyez = 100 * sin(angulo)
+        parameters_3d()
 
-    glutPostRedisplay()
-
-
-# Funcao callback para tratar eventos de teclas especiais
-def teclasEspeciais(tecla, x, y):
-    global luz, angle
-    if tecla == GLUT_KEY_LEFT:
-        posLuz[luz][0] -= 2
-    elif tecla == GLUT_KEY_RIGHT:
-        posLuz[luz][0] += 2
-    elif tecla == GLUT_KEY_UP:
-        posLuz[luz][1] += 2
-    elif tecla == GLUT_KEY_DOWN:
-        posLuz[luz][1] -= 2
-    elif tecla == GLUT_KEY_PAGE_UP:
-        posLuz[luz][2] -= 2
-    elif tecla == GLUT_KEY_PAGE_DOWN:
-        posLuz[luz][2] += 2
-    elif tecla == GLUT_KEY_HOME:
-        if angle >= 10:
-            angle -= 5
-    elif tecla == GLUT_KEY_END:
-        if angle <= 150:
-            angle += 5
-    elif tecla == b'1':
-        pass
-    observer()
     glutPostRedisplay()
 
 
@@ -492,7 +466,7 @@ def init():
     angle = 70
     rotY = 0
     obsX = 0
-    obsY = 0
+    obsY = 25
     obsZ = 100
 
 
@@ -508,7 +482,6 @@ def main():
     glutDisplayFunc(draw)
     glutReshapeFunc(change_window_size)
     glutKeyboardFunc(keyboard)
-    glutSpecialFunc(teclasEspeciais)
     glutMouseFunc(mouse)
     glutMotionFunc(movement)
     init()
