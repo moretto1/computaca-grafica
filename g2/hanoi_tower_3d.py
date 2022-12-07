@@ -31,10 +31,13 @@ y_ini = 0
 bot = 0
 
 luz = 0  # Luz selecionada
-posLuz = [[-30, 50, 0, 1], [0, 50, 0, 1], [30, 50, 0, 1]]  # Posicao de cada luz
+posLuz = [[-30, 50, 0, 1], [0, 50, 0, 1],
+          [30, 50, 0, 1]]  # Posicao de cada luz
 dirLuz = [[0, -1, 0], [0, -1, 0], [0, -1, 0]]  # Direcao de cada luz
-luzDifusa = [[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]  # Cor difusa de cada luz #RGB
-luzEspecular = [[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]  # Cor especular de cada luz #RGB
+# Cor difusa de cada luz #RGB
+luzDifusa = [[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]
+# Cor especular de cada luz #RGB
+luzEspecular = [[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]
 
 SENS_ROT = 5.0
 SENS_OBS = 10.0
@@ -96,9 +99,12 @@ def sets_lighting():
     luzAmbiente = [0.1, 0.1, 0.1, 1.0]
     especularidade = [0.7, 0.7, 0.7, 1.0]  # Capacidade de brilho do material
     especMaterial = 90
-    glMaterialfv(GL_FRONT, GL_SPECULAR, especularidade)  # Define a refletancia do material
-    glMateriali(GL_FRONT, GL_SHININESS, especMaterial)  # Define a concentracao do brilho
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente)  # Ativa o uso da lutowers['t' + strz ambiente
+    # Define a refletancia do material
+    glMaterialfv(GL_FRONT, GL_SPECULAR, especularidade)
+    # Define a concentracao do brilho
+    glMateriali(GL_FRONT, GL_SHININESS, especMaterial)
+    # Ativa o uso da lutowers['t' + strz ambiente
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, luzAmbiente)
     cont = 0
     while cont < 3:  # Define os parametros das fontes de luz
         glLightfv(GL_LIGHT0 + cont, GL_AMBIENT, luzAmbiente)
@@ -123,13 +129,13 @@ def floor():
     flagx = False
     x = -TAM
     while x < TAM:  # X varia de -TAM a TAM, de D em D
-        if flagx == True:  # Flagx determina a cor inicial
+        if flagx:  # Flagx determina a cor inicial
             flagz = False
         else:
             flagz = True
         z = -TAM
         while z < TAM:  # Z varia de -TAM a TAM, de D em D
-            if flagz == True:  # Escolhe cor
+            if flagz:  # Escolhe cor
                 glColor3f(0.4, 0.4, 0.4)
             else:
                 glColor3f(1.0, 1.0, 1.0)
@@ -261,7 +267,9 @@ def win_message():
     glPushMatrix()
     glRasterPos2f(-10, 50)
     for i in range(len(win_message_str)):
-        glut.glutBitmapCharacter(glut.GLUT_BITMAP_HELVETICA_18, ord(win_message_str[i]))
+        glut.glutBitmapCharacter(
+            glut.GLUT_BITMAP_HELVETICA_18, ord(
+                win_message_str[i]))
     glPopMatrix()
 
 
@@ -279,7 +287,8 @@ def visualization_params():
     global fAspect, angle
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()  # Inicializa sistema de coordenadas de projecao
-    gluPerspective(angle, fAspect, 0.5, 1500)  # Especifica a projecao perspectiva(angulo,aspecto,zMin,zMax)
+    # Especifica a projecao perspectiva(angulo,aspecto,zMin,zMax)
+    gluPerspective(angle, fAspect, 0.5, 1500)
     observer()
 
 
@@ -307,10 +316,12 @@ def game(disc_number):
 
 
 def can_make_the_move(actual_tower, next_tower, disc):
-    if towers['t' + str(actual_tower)]['discs'][0] != discs['disc' + str(disc)]['number']:
+    if towers['t' +
+              str(actual_tower)]['discs'][0] != discs['disc' +
+                                                      str(disc)]['number']:
         return False
-    if len(towers['t' + str(next_tower)]['discs']) != 0 and towers['t' + str(next_tower)]['discs'][0] < \
-            discs['disc' + str(disc)]['number']:
+    if len(towers['t' + str(next_tower)]['discs']) != 0 and towers['t' + \
+           str(next_tower)]['discs'][0] < discs['disc' + str(disc)]['number']:
         return False
     return True
 
@@ -324,14 +335,17 @@ def reset_game():
 
 def parameters_3d():
     global angle, faspect, upx, upy, upz, eyex, eyey, eyez
-    glMatrixMode(GL_PROJECTION)  # Especifica sistema de coordenadas de projecao
+    # Especifica sistema de coordenadas de projecao
+    glMatrixMode(GL_PROJECTION)
     glLoadIdentity()  # Inicializa sistema de coordenadas de projecao
-    gluPerspective(angle, fAspect, 0.5, 500)  # Especifica a projecao perspectiva
+    # Especifica a projecao perspectiva
+    gluPerspective(angle, fAspect, 0.5, 500)
     # glFrustum(-1,1 ,-1 ,1 , 0.5, 200)
     # glOrtho(-40,40,-40,40,-60,60)
     glMatrixMode(GL_MODELVIEW)  # Especifica sistema de coordenadas do modelo
     glLoadIdentity()  # Inicializa sistema de coordenadas do modelo
-    gluLookAt(eyex, eyey, eyez, 0, 0, 0, upx, upy, upz)  # Especifica posicao do observador e do ponto de foco ou alvo
+    # Especifica posicao do observador e do ponto de foco ou alvo
+    gluLookAt(eyex, eyey, eyez, 0, 0, 0, upx, upy, upz)
 
 
 def keyboard(tecla, x, y):
