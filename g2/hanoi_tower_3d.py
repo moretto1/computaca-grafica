@@ -31,12 +31,10 @@ y_ini = 0
 bot = 0
 
 luz = 0  # Luz selecionada
-posLuz = [[-30, 50, 0, 1], [0, 50, 0, 1],
-          [30, 50, 0, 1]]  # Posicao de cada luz
-dirLuz = [[0, -1, 0], [0, -1, 0], [0, -1, 0]]  # Direcao de cada luz
-# Cor difusa de cada luz #RGB
+posLuz = [[-30, 50, 0, 1], [0, 50, 0, 1], [30, 50, 0, 1]]
+dirLuz = [[0, -1, 0], [0, -1, 0], [0, -1, 0]] 
+
 luzDifusa = [[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]
-# Cor especular de cada luz #RGB
 luzEspecular = [[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]
 
 SENS_ROT = 5.0
@@ -96,7 +94,7 @@ def set_discs_default_values():
 # Funcao responsavel pela especificacao dos parametros de iluminacao
 def sets_lighting():
     global posLuz, dirLuz, luzDifusa, luzEspecular
-    luzAmbiente = [0.1, 0.1, 0.1, 1.0]
+    luzAmbiente = [0.2, 0.2, 0.2, 1.0]
     especularidade = [0.7, 0.7, 0.7, 1.0]  # Capacidade de brilho do material
     especMaterial = 90
     # Define a refletancia do material
@@ -265,7 +263,7 @@ def win_message():
     global win_message_rotation
     glColor3f(0, 0.8, 0)
     glPushMatrix()
-    glRasterPos2f(-10, 50)
+    glRasterPos3f(-5, 15, 30)
     for i in range(len(win_message_str)):
         glut.glutBitmapCharacter(
             glut.GLUT_BITMAP_HELVETICA_18, ord(
@@ -398,7 +396,7 @@ def keyboard(tecla, x, y):
 def help_text():
     text = "Aperte 'r' para reiniciar o jogo"
     glColor3f(1, 1, 1)
-    glRasterPos2f(0, 50)
+    glRasterPos3f(-10, 20, 30)
     for i in range(len(text)):
         glut.glutBitmapCharacter(glut.GLUT_BITMAP_HELVETICA_18, ord(text[i]))
 
